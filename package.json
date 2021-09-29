@@ -1,0 +1,30 @@
+{
+  "name": "api-powered-app",
+  "version": "1.0.0",
+  "engines": {
+    "node": "16.8.0",
+    "npm": "7.21.0"
+  },
+  "description": "API Powered App (430 Project 1)",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./src --fix",
+    "test": "echo \"Tests Complete\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nfb1799/api-powered-app.git"
+  },
+  "author": "Nik Barbero",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/nfb1799/api-powered-app/issues"
+  },
+  "homepage": "https://github.com/nfb1799/api-powered-app#readme",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.24.2"
+  }
+}
