@@ -50,30 +50,15 @@ var handleResponse = function handleResponse(xhr) {
   }
 };
 
-var requestUpdate = function requestUpdate(e, userForm) {
-  var url = userForm.querySelector('#urlField').value;
-  var method = userForm.querySelector('#methodSelect').value;
-  var xhr = new XMLHttpRequest();
-  xhr.open(method, url);
-  xhr.setRequestHeader('Accept', 'application/json');
-
-  xhr.onload = function () {
-    return handleResponse(xhr);
-  };
-
-  xhr.send();
+var sendPost = function sendPost(e, activityForm) {
   e.preventDefault();
-  return false;
-};
-
-var sendPost = function sendPost(e, nameForm) {
-  e.preventDefault();
-  var nameAction = nameForm.getAttribute('action');
-  var nameMethod = nameForm.getAttribute('method');
-  var nameField = nameForm.querySelector('#nameField');
-  var ageField = nameForm.querySelector('#ageField');
+  var activityAction = activityForm.getAttribute('action');
+  var activityMethod = activityForm.getAttribute('method');
+  var dateField = activityForm.querySelector('#dateField');
+  var activityField = activityForm.querySelector('#activityField');
+  var notesField = activityForm.querySelector('#notesField');
   var xhr = new XMLHttpRequest();
-  xhr.open(nameMethod, nameAction);
+  xhr.open(activityMethod, activityAction);
   xhr.setRequestHeader('Accept', 'application/json');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -81,26 +66,19 @@ var sendPost = function sendPost(e, nameForm) {
     return handleResponse(xhr);
   };
 
-  var formData = "name=".concat(nameField.value, "&age=").concat(ageField.value);
+  var formData = "date=".concat(dateField.value, "&activity=").concat(activityField.value, "&notes=").concat(notesField.value);
   xhr.send(formData);
   return false;
 };
 
 var init = function init() {
-  var nameForm = document.querySelector('#nameForm');
+  var activityForm = document.querySelector('#activityForm');
 
-  var addUser = function addUser(e) {
-    return sendPost(e, nameForm);
+  var addActivity = function addActivity(e) {
+    return sendPost(e, activityForm);
   };
 
-  nameForm.addEventListener('submit', addUser);
-  var userForm = document.querySelector('#userForm');
-
-  var getUsers = function getUsers(e) {
-    return requestUpdate(e, userForm);
-  };
-
-  userForm.addEventListener('submit', getUsers);
+  activityForm.addEventListener('submit', addActivity);
 };
 
 window.onload = init;
