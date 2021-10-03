@@ -10,7 +10,10 @@
   "scripts": {
     "start": "node ./src/server.js",
     "pretest": "eslint ./src --fix",
-    "test": "echo \"Tests Complete\""
+    "test": "echo \"Tests Complete\"",
+    "nodemon": "nodemon -e js,html,css --watch ./src --watch ./hosted ./src/server.js",
+    "build": "babel ./client --out-file ./hosted/bundle.js",
+    "watch": "babel --watch ./client --out-file ./hosted/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -23,8 +26,12 @@
   },
   "homepage": "https://github.com/nfb1799/api-powered-app#readme",
   "devDependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.6",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
-    "eslint-plugin-import": "^2.24.2"
+    "eslint-plugin-import": "^2.24.2",
+    "nodemon": "^2.0.13"
   }
 }
