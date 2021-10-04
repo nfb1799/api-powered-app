@@ -41,6 +41,7 @@ const addActivity = (request, response, body) => {
     if(activities[body.date]) responseCode = 204;
     else activities[body.date] = {};
 
+    activities[body.date].date = body.date;
     activities[body.date].activity = body.activity;
     if(body.notes) activities[body.date].notes = body.notes;
 
@@ -52,7 +53,12 @@ const addActivity = (request, response, body) => {
     return respondJSONMeta(request, response, responseCode);
 };
 
+const getActivities = (request, response) => {
+    respondJSON(request, response, 200, activities);
+};
+
 module.exports = {
     notFound,
     addActivity,
+    getActivities,
 };

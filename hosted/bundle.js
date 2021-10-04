@@ -7,11 +7,9 @@ var parseJSON = function parseJSON(xhr, content) {
     var p = document.createElement('p');
     p.textContent = "Message: ".concat(obj.message);
     content.appendChild(p);
-  } else {
-    var userList = document.createElement('p');
-    userList.textContent = xhr.response;
-    content.appendChild(userList);
   }
+
+  console.dir(obj);
 };
 
 var handleResponse = function handleResponse(xhr) {
@@ -44,10 +42,38 @@ var handleResponse = function handleResponse(xhr) {
       break;
   }
 
+  console.dir(xhr);
+
   if (xhr.response) {
     parseJSON(xhr, content);
-    console.dir(xhr.response);
   }
+};
+
+var displayActivity = function displayActivity(xhr, date) {
+  var responseJSON = JSON.parse(xhr.response);
+  var content = document.querySelector('#content');
+
+  if (responseJSON[date]) {
+    content.innerHTML = "<b>".concat(responseJSON[date].activity, " - (").concat(date, ")</b>");
+    content.innerHTML += "<p>Notes: ".concat(responseJSON[date].notes, "</p>");
+  } else {
+    content.innerHTML = "No activities found on ".concat(date);
+  }
+};
+
+var requestUpdate = function requestUpdate(e, dateForm) {
+  var date = dateForm.querySelector('#getDateField').value;
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/getActivities');
+  xhr.setRequestHeader('Accept', 'application/json');
+
+  xhr.onload = function () {
+    return displayActivity(xhr, date);
+  };
+
+  xhr.send();
+  e.preventDefault();
+  return false;
 };
 
 var sendPost = function sendPost(e, activityForm) {
@@ -79,6 +105,13 @@ var init = function init() {
   };
 
   activityForm.addEventListener('submit', addActivity);
+  var dateForm = document.querySelector('#dateForm');
+
+  var getActivity = function getActivity(e) {
+    return requestUpdate(e, dateForm);
+  };
+
+  dateForm.addEventListener('submit', getActivity);
 };
 
 window.onload = init;

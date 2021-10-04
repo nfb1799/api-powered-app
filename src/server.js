@@ -10,6 +10,7 @@ const urlStruct = {
     '/': htmlHandler.getIndex,
     '/style.css': htmlHandler.getStyle,
     '/bundle.js': htmlHandler.getBundle,
+    '/getActivities': jsonHandler.getActivities,
     notFound: jsonHandler.notFound,
 };
 

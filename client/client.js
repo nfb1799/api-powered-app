@@ -5,11 +5,7 @@ const parseJSON = (xhr, content) => {
     p.textContent = `Message: ${obj.message}`;
     content.appendChild(p);
   }
-  else {
-    const userList = document.createElement('p');
-    userList.textContent = xhr.response;
-    content.appendChild(userList);
-  }
+  console.dir(obj);
 };
 
 const handleResponse = (xhr) => {
@@ -36,11 +32,39 @@ const handleResponse = (xhr) => {
       content.innerHTML = '<p>Error code not implemented by client! :(</p>';
       break;
   }
-
+  console.dir(xhr);
   if(xhr.response) {
     parseJSON(xhr, content);
-    console.dir(xhr.response);
   }
+};
+
+const displayActivity = (xhr, date) => {
+  const responseJSON = JSON.parse(xhr.response);
+
+  const content = document.querySelector('#content');
+
+  if(responseJSON[date]) {
+    content.innerHTML = `<b>${responseJSON[date].activity} - (${date})</b>`;
+    content.innerHTML += `<p>Notes: ${responseJSON[date].notes}</p>`;
+  } else {
+    content.innerHTML = `No activities found on ${date}`;
+  }
+};
+
+const requestUpdate = (e, dateForm) => {
+  const date = dateForm.querySelector('#getDateField').value;
+  
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', '/getActivities');
+
+  xhr.setRequestHeader('Accept', 'application/json');
+
+  xhr.onload = () => displayActivity(xhr, date); 
+
+  xhr.send();
+
+  e.preventDefault();
+  return false;
 };
 
 const sendPost = (e, activityForm) => {
@@ -71,6 +95,10 @@ const init = () => {
   const activityForm = document.querySelector('#activityForm');
   const addActivity = (e) => sendPost(e, activityForm);
   activityForm.addEventListener('submit', addActivity);
+
+  const dateForm = document.querySelector('#dateForm');
+  const getActivity = (e) => requestUpdate(e, dateForm);
+  dateForm.addEventListener('submit', getActivity);
 };
 
 window.onload = init;
