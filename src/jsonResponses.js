@@ -21,7 +21,10 @@ const notFound = (request, response) => {
         id: 'notFound'
     };
 
-    return respondJSON(request, response, 404, content);
+    if(request.method === 'GET')
+        return respondJSON(request, response, 404, content);
+    else if(request.method === 'HEAD')
+        return respondJSONMeta(request, response, 404);
 };
 
 const addActivity = (request, response, body) => {
@@ -45,11 +48,6 @@ const addActivity = (request, response, body) => {
     activities[body.date][body.activity].activity = body.activity;
     if(body.notes) activities[body.date][body.activity].notes = body.notes;
     console.dir(activities);
-    /*
-    activities[body.date].date = body.date;
-    activities[body.date].activity = [body.activity];
-    if(body.notes) activities[body.date].notes = body.notes;
-    */
 
     if(responseCode === 201) {
         responseJSON.message = 'Created Successfully';
@@ -60,7 +58,11 @@ const addActivity = (request, response, body) => {
 };
 
 const getActivities = (request, response) => {
-    respondJSON(request, response, 200, activities);
+    if(request.method === 'GET') {
+        respondJSON(request, response, 200, activities);
+    } else if(request.method === 'HEAD') {
+        respondJSONMeta(request, response, 200);
+    }
 };
 
 module.exports = {
