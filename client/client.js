@@ -44,8 +44,17 @@ const displayActivity = (xhr, date) => {
   const content = document.querySelector('#content');
 
   if(responseJSON[date]) {
-    content.innerHTML = `<b>${responseJSON[date].activity} - (${date})</b>`;
-    content.innerHTML += `<p>Notes: ${responseJSON[date].notes}</p>`;
+    content.innerHTML = `<h3>${date}</h3>`;
+
+    for(const act in responseJSON[date]) {
+      console.dir(responseJSON[date][act]);
+      content.innerHTML += `<b>${responseJSON[date][act].activity}</b>`;
+      if(responseJSON[date][act].notes) 
+        content.innerHTML += `<p>${responseJSON[date][act].notes}</p>`;
+    }
+    /*content.innerHTML = `<h3>${date}</h3>`;
+    content.innerHTML += `<b>${responseJSON[date].activity[0]}</b>`;
+    content.innerHTML += `<p>Notes: ${responseJSON[date].notes}</p>`;*/
   } else {
     content.innerHTML = `No activities found on ${date}`;
   }

@@ -54,8 +54,17 @@ var displayActivity = function displayActivity(xhr, date) {
   var content = document.querySelector('#content');
 
   if (responseJSON[date]) {
-    content.innerHTML = "<b>".concat(responseJSON[date].activity, " - (").concat(date, ")</b>");
-    content.innerHTML += "<p>Notes: ".concat(responseJSON[date].notes, "</p>");
+    content.innerHTML = "<h3>".concat(date, "</h3>");
+
+    for (var act in responseJSON[date]) {
+      console.dir(responseJSON[date][act]);
+      content.innerHTML += "<b>".concat(responseJSON[date][act].activity, "</b>");
+      if (responseJSON[date][act].notes) content.innerHTML += "<p>".concat(responseJSON[date][act].notes, "</p>");
+    }
+    /*content.innerHTML = `<h3>${date}</h3>`;
+    content.innerHTML += `<b>${responseJSON[date].activity[0]}</b>`;
+    content.innerHTML += `<p>Notes: ${responseJSON[date].notes}</p>`;*/
+
   } else {
     content.innerHTML = "No activities found on ".concat(date);
   }

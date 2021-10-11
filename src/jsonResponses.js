@@ -41,9 +41,15 @@ const addActivity = (request, response, body) => {
     if(activities[body.date]) responseCode = 204;
     else activities[body.date] = {};
 
+    activities[body.date][body.activity] = {};
+    activities[body.date][body.activity].activity = body.activity;
+    if(body.notes) activities[body.date][body.activity].notes = body.notes;
+    console.dir(activities);
+    /*
     activities[body.date].date = body.date;
-    activities[body.date].activity = body.activity;
+    activities[body.date].activity = [body.activity];
     if(body.notes) activities[body.date].notes = body.notes;
+    */
 
     if(responseCode === 201) {
         responseJSON.message = 'Created Successfully';
