@@ -12,7 +12,7 @@ var parseJSON = function parseJSON(xhr, content) {
   console.dir(obj);
 };
 
-var handleResponse = function handleResponse(xhr) {
+var handleResponse = function handleResponse(xhr, display) {
   var content = document.querySelector('#content');
   content.innerHTML = "";
 
@@ -70,8 +70,8 @@ var displayActivity = function displayActivity(xhr, date) {
   }
 };
 
-var requestUpdate = function requestUpdate(e, dateForm) {
-  var date = dateForm.querySelector('#getDateField').value;
+var requestUpdate = function requestUpdate(e, activityForm) {
+  var date = activityForm.querySelector('#dateField').value;
   var xhr = new XMLHttpRequest();
   xhr.open('GET', '/getActivities');
   xhr.setRequestHeader('Accept', 'application/json');
@@ -113,14 +113,12 @@ var init = function init() {
     return sendPost(e, activityForm);
   };
 
-  activityForm.addEventListener('submit', addActivity);
-  var dateForm = document.querySelector('#dateForm');
-
   var getActivity = function getActivity(e) {
-    return requestUpdate(e, dateForm);
+    return requestUpdate(e, activityForm);
   };
 
-  dateForm.addEventListener('submit', getActivity);
+  activityForm.addEventListener('submit', addActivity);
+  activityForm.addEventListener('submit', getActivity);
 };
 
 window.onload = init;

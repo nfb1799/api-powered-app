@@ -8,7 +8,7 @@ const parseJSON = (xhr, content) => {
   console.dir(obj);
 };
 
-const handleResponse = (xhr) => {
+const handleResponse = (xhr, display) => {
   const content = document.querySelector('#content');
   content.innerHTML = "";
 
@@ -60,8 +60,8 @@ const displayActivity = (xhr, date) => {
   }
 };
 
-const requestUpdate = (e, dateForm) => {
-  const date = dateForm.querySelector('#getDateField').value;
+const requestUpdate = (e, activityForm) => {
+  const date = activityForm.querySelector('#dateField').value;
   
   const xhr = new XMLHttpRequest();
   xhr.open('GET', '/getActivities');
@@ -103,11 +103,9 @@ const sendPost = (e, activityForm) => {
 const init = () => {
   const activityForm = document.querySelector('#activityForm');
   const addActivity = (e) => sendPost(e, activityForm);
+  const getActivity = (e) => requestUpdate(e, activityForm);
   activityForm.addEventListener('submit', addActivity);
-
-  const dateForm = document.querySelector('#dateForm');
-  const getActivity = (e) => requestUpdate(e, dateForm);
-  dateForm.addEventListener('submit', getActivity);
+  activityForm.addEventListener('submit', getActivity);
 };
 
 window.onload = init;
