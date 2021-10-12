@@ -40,32 +40,6 @@ const handleResponse = (xhr, display) => {
   }
 };
 
-/*
-const displayActivity = (xhr, date) => {
-  const responseJSON = JSON.parse(xhr.response);
-
-  const content = document.querySelector('#content');
-  
-  content.innerHTML += `<div id="_${date}"></div>`;
-  
-  const activity = document.querySelector(`#_${date.toString()}`);
-
-  if(responseJSON[date]) {
-
-    activity.innerHTML += `<h3>${date}</h3>`;
-
-    for(const act in responseJSON[date]) {
-      console.dir(responseJSON[date][act]);
-      activity.innerHTML += `<b>Activity: ${responseJSON[date][act].activity}</b>`;
-      if(responseJSON[date][act].notes) 
-      activity.innerHTML += `<p>Notes: ${responseJSON[date][act].notes}</p>`;
-    }
-  } else {
-    content.innerHTML = `No activities found on ${date}`;
-  }
-};
-*/
-
 const displayActivities = (xhr) => {
   const responseJSON = JSON.parse(xhr.response);
   const content = document.querySelector('#content');
@@ -125,9 +99,25 @@ const sendPost = (e, activityForm) => {
 
   const formData = `date=${dateField.value}&activity=${activityField.value}&notes=${notesField.value}`;
   xhr.send(formData);
-
+  console.log(xhr);
   return false;
 };
+
+const sendUserName = (e, username) => {
+  const xhr = new XMLHttpRequest();
+
+  xhr.open('POST', '/addUser');
+
+  console.log(xhr);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+  xhr.onload = () => handleResponse(xhr);
+
+  const formData = `username=${username}`;
+  xhr.send(formData);
+  return false;
+}
 
 const init = () => {
   const activityForm = document.querySelector('#activityForm');
@@ -135,6 +125,25 @@ const init = () => {
   const getActivity = (e) => requestUpdate(e, activityForm);
   activityForm.addEventListener('submit', addActivity);
   activityForm.addEventListener('submit', getActivity);
+  console.log(localStorage.getItem('username'));
+  sendUserName(localStorage.getItem('username'));
 };
 
-window.onload = init;
+// https://www.w3schools.com/js/js_popup.asp
+// users need a username in order to see only their activities
+const userNamePopUp = () => {
+  
+  if(localStorage.getItem('username') == null) {
+    let p;
+    
+    do {
+      p = prompt("Please enter a username", "");
+    } while (p == null || p == "");
+
+    localStorage.setItem('username', p);
+  }
+
+  init();
+};
+
+window.onload = userNamePopUp;

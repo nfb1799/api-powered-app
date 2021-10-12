@@ -11,30 +11,30 @@ const urlStruct = {
   '/style.css': htmlHandler.getStyle,
   '/bundle.js': htmlHandler.getBundle,
   '/getActivities': jsonHandler.getActivities,
+  '/addUser': jsonHandler.addUser,
   notFound: jsonHandler.notFound,
 };
 
 const handlePost = (request, response, parsedURL) => {
-  if (parsedURL.pathname === '/addActivity') {
-    const body = [];
+  const body = [];
 
-    request.on('error', (err) => {
-      console.dir(err);
-      response.statusCode = 400;
-      response.end();
-    });
+  request.on('error', (err) => {
+    console.dir(err);
+    response.statusCode = 400;
+    response.end();
+  });
 
-    request.on('data', (chunk) => {
-      body.push(chunk);
-    });
+  request.on('data', (chunk) => {
+    body.push(chunk);
+  });
 
-    request.on('end', () => {
-      const bodyString = Buffer.concat(body).toString();
-      const bodyParams = query.parse(bodyString);
+  request.on('end', () => {
+    const bodyString = Buffer.concat(body).toString();
+    const bodyParams = query.parse(bodyString);
 
-      jsonHandler.addActivity(request, response, bodyParams);
-    });
-  }
+    if (parsedURL.pathname === '/addActivity') jsonHandler.addActivity(request, response, bodyParams);
+    else if (parsedURL.pathname === '/addUser') jsonHandler.addUser(request, response, bodyParams);
+  });
 };
 
 const onRequest = (request, response) => {

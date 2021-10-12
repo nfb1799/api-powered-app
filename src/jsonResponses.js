@@ -25,6 +25,7 @@ const notFound = (request, response) => {
   return respondJSON(request, response, 404, content);
 };
 
+// needs to be refactored for usernames!!
 const addActivity = (request, response, body) => {
   const responseJSON = {
     message: 'Date and Activity are both required',
@@ -63,8 +64,30 @@ const getActivities = (request, response) => {
   }
 };
 
+const addUser = (request, response, body) => {
+  const responseJSON = {
+    message: 'Username is required',
+  };
+
+  let responseCode = 201;
+
+  if (activities[body.username]) {
+    responseCode = 403;
+    responseJSON.message = 'User already exists';
+  } else {
+    activities[body.username] = {};
+  }
+
+  if (responseCode === 201) {
+    responseJSON.message = 'Created Successfully';
+  }
+
+  return respondJSON(request, response, responseCode, responseJSON);
+};
+
 module.exports = {
   notFound,
   addActivity,
   getActivities,
+  addUser,
 };

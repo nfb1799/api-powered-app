@@ -48,32 +48,6 @@ var handleResponse = function handleResponse(xhr, display) {
     parseJSON(xhr, response);
   }
 };
-/*
-const displayActivity = (xhr, date) => {
-  const responseJSON = JSON.parse(xhr.response);
-
-  const content = document.querySelector('#content');
-  
-  content.innerHTML += `<div id="_${date}"></div>`;
-  
-  const activity = document.querySelector(`#_${date.toString()}`);
-
-  if(responseJSON[date]) {
-
-    activity.innerHTML += `<h3>${date}</h3>`;
-
-    for(const act in responseJSON[date]) {
-      console.dir(responseJSON[date][act]);
-      activity.innerHTML += `<b>Activity: ${responseJSON[date][act].activity}</b>`;
-      if(responseJSON[date][act].notes) 
-      activity.innerHTML += `<p>Notes: ${responseJSON[date][act].notes}</p>`;
-    }
-  } else {
-    content.innerHTML = `No activities found on ${date}`;
-  }
-};
-*/
-
 
 var displayActivities = function displayActivities(xhr) {
   var responseJSON = JSON.parse(xhr.response);
@@ -128,6 +102,23 @@ var sendPost = function sendPost(e, activityForm) {
 
   var formData = "date=".concat(dateField.value, "&activity=").concat(activityField.value, "&notes=").concat(notesField.value);
   xhr.send(formData);
+  console.log(xhr);
+  return false;
+};
+
+var sendUserName = function sendUserName(e, username) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/addUser');
+  console.log(xhr);
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+  xhr.onload = function () {
+    return handleResponse(xhr);
+  };
+
+  var formData = "username=".concat(username);
+  xhr.send(formData);
   return false;
 };
 
@@ -144,6 +135,24 @@ var init = function init() {
 
   activityForm.addEventListener('submit', addActivity);
   activityForm.addEventListener('submit', getActivity);
+  console.log(localStorage.getItem('username'));
+  sendUserName(localStorage.getItem('username'));
+}; // https://www.w3schools.com/js/js_popup.asp
+// users need a username in order to see only their activities
+
+
+var userNamePopUp = function userNamePopUp() {
+  if (localStorage.getItem('username') == null) {
+    var p;
+
+    do {
+      p = prompt("Please enter a username", "");
+    } while (p == null || p == "");
+
+    localStorage.setItem('username', p);
+  }
+
+  init();
 };
 
-window.onload = init;
+window.onload = userNamePopUp;
