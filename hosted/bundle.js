@@ -124,24 +124,35 @@ var sendUserName = function sendUserName(username) {
 
 var checkUserName = function checkUserName(username) {
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', 'checkUser');
+  xhr.open('GET', "/checkUser?username=".concat(username));
   xhr.setRequestHeader('Accept', 'application/json');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
   xhr.onload = function () {
-    var obj = JSON.parse(xhr.response); //if(obj.result == 'false')
-    //sendUserName(localStorage.getItem('username'));
+    var obj = JSON.parse(xhr.response);
+    console.log(obj);
 
-    return obj.result == 'true';
+    if (obj.result == 'false') {
+      sendUserName(username);
+    } else {
+      var p;
+
+      do {
+        p = prompt("Username is already in use. Enter a different username.", "");
+      } while (p == null || p == "");
+
+      localStorage.setItem('username', p);
+      checkUserName(p);
+    }
   };
 
-  var formData = "username=".concat(username);
-  xhr.send(formData);
+  xhr.send();
   console.log(xhr);
   return false;
 };
 
 var init = function init() {
+  var username = localStorage.getItem('username');
   var activityForm = document.querySelector('#activityForm');
 
   var addActivity = function addActivity(e) {
@@ -155,6 +166,7 @@ var init = function init() {
   activityForm.addEventListener('submit', addActivity);
   activityForm.addEventListener('submit', getActivity); //console.log(localStorage.getItem('username'));
   //console.log(checkUserName(localStorage.getItem('username')));
+  //checkUserName(username);
 }; // https://www.w3schools.com/js/js_popup.asp
 // users need a username in order to see only their activities
 
@@ -165,15 +177,11 @@ var userNamePopUp = function userNamePopUp() {
 
     do {
       p = prompt("Please enter a username", "");
-    } while (p == null || p == "");
+    } while (p == null || p == ""); // console.log(checkUserName(p));
 
-    while (checkUserName(p)) {
-      //loop until a valid name is entered
-      p = prompt("Username is already in use. Enter a different username.", "");
-    }
 
-    console.log(checkUserName(p));
     localStorage.setItem('username', p);
+    checkUserName(p); //sendUserName(p);
   }
 
   init();

@@ -87,11 +87,13 @@ const addUser = (request, response, body) => {
 
 // returns true if the username exists
 const checkUser = (request, response, body) => {
+  const username = body.query.slice(9); // query is 'username='
   const responseJSON = {
     result: 'false',
   };
 
-  if (activities[body.username]) responseJSON.result = 'true';
+  console.log(activities[username]);
+  if (activities[username]) responseJSON.result = 'true';
 
   return respondJSON(request, response, 201, responseJSON);
 };
