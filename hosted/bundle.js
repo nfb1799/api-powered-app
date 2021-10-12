@@ -106,7 +106,7 @@ var sendPost = function sendPost(e, activityForm) {
   return false;
 };
 
-var sendUserName = function sendUserName(e, username) {
+var sendUserName = function sendUserName(username) {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/addUser');
   console.log(xhr);
@@ -115,6 +115,22 @@ var sendUserName = function sendUserName(e, username) {
 
   xhr.onload = function () {
     return handleResponse(xhr);
+  };
+
+  var formData = "username=".concat(username);
+  xhr.send(formData);
+  return false;
+};
+
+var checkUserName = function checkUserName(username) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'checkUser');
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+  xhr.onload = function () {
+    var obj = JSON.parse(xhr.response);
+    if (obj.result == 'false') sendUserName(localStorage.getItem('username'));
   };
 
   var formData = "username=".concat(username);
@@ -136,7 +152,7 @@ var init = function init() {
   activityForm.addEventListener('submit', addActivity);
   activityForm.addEventListener('submit', getActivity);
   console.log(localStorage.getItem('username'));
-  sendUserName(localStorage.getItem('username'));
+  checkUserName(localStorage.getItem('username'));
 }; // https://www.w3schools.com/js/js_popup.asp
 // users need a username in order to see only their activities
 
@@ -149,7 +165,7 @@ var userNamePopUp = function userNamePopUp() {
       p = prompt("Please enter a username", "");
     } while (p == null || p == "");
 
-    localStorage.setItem('username', p);
+    localStorage.setItem('username', p); //sendUserName(p);
   }
 
   init();

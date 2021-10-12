@@ -12,6 +12,7 @@ const urlStruct = {
   '/bundle.js': htmlHandler.getBundle,
   '/getActivities': jsonHandler.getActivities,
   '/addUser': jsonHandler.addUser,
+  '/checkUser': jsonHandler.checkUser,
   notFound: jsonHandler.notFound,
 };
 
@@ -34,6 +35,7 @@ const handlePost = (request, response, parsedURL) => {
 
     if (parsedURL.pathname === '/addActivity') jsonHandler.addActivity(request, response, bodyParams);
     else if (parsedURL.pathname === '/addUser') jsonHandler.addUser(request, response, bodyParams);
+    else if (parsedURL.pathname === '/checkUser') jsonHandler.checkUser(request, response, bodyParams);
   });
 };
 

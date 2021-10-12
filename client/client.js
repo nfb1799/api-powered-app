@@ -103,7 +103,7 @@ const sendPost = (e, activityForm) => {
   return false;
 };
 
-const sendUserName = (e, username) => {
+const sendUserName = (username) => {
   const xhr = new XMLHttpRequest();
 
   xhr.open('POST', '/addUser');
@@ -116,7 +116,27 @@ const sendUserName = (e, username) => {
 
   const formData = `username=${username}`;
   xhr.send(formData);
+
   return false;
+}
+
+const checkUserName = (username) => {
+  const xhr = new XMLHttpRequest();
+
+  xhr.open('POST', 'checkUser');
+  xhr.setRequestHeader('Accept', 'application/json');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+  xhr.onload = () => {
+    let obj = JSON.parse(xhr.response);
+    if(obj.result == 'false')
+      sendUserName(localStorage.getItem('username'));
+  };
+
+  const formData = `username=${username}`;
+  xhr.send(formData);
+  
+  return false; 
 }
 
 const init = () => {
@@ -126,7 +146,7 @@ const init = () => {
   activityForm.addEventListener('submit', addActivity);
   activityForm.addEventListener('submit', getActivity);
   console.log(localStorage.getItem('username'));
-  sendUserName(localStorage.getItem('username'));
+  checkUserName(localStorage.getItem('username'));
 };
 
 // https://www.w3schools.com/js/js_popup.asp
@@ -141,7 +161,8 @@ const userNamePopUp = () => {
     } while (p == null || p == "");
 
     localStorage.setItem('username', p);
-  }
+    //sendUserName(p);
+  } 
 
   init();
 };
