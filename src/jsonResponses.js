@@ -36,16 +36,16 @@ const addActivity = (request, response, body) => {
     return respondJSON(request, response, 400, responseJSON);
   }
 
-  let responseCode = 201;
+  let responseCode = 201; // success
 
   console.dir(body.date);
 
-  if (activities[body.date]) responseCode = 204;
-  else activities[body.date] = {};
+  if (activities[body.username][body.date]) responseCode = 204; // updated
+  else activities[body.username][body.date] = {};
 
-  activities[body.date][body.activity] = {};
-  activities[body.date][body.activity].activity = body.activity;
-  if (body.notes) activities[body.date][body.activity].notes = body.notes;
+  activities[body.username][body.date][body.activity] = {};
+  activities[body.username][body.date][body.activity].activity = body.activity;
+  if (body.notes) activities[body.username][body.date][body.activity].notes = body.notes;
   console.dir(activities);
 
   if (responseCode === 201) {

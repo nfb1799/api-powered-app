@@ -50,21 +50,22 @@ var handleResponse = function handleResponse(xhr, display) {
 };
 
 var displayActivities = function displayActivities(xhr) {
+  var username = localStorage.getItem('username');
   var responseJSON = JSON.parse(xhr.response);
   var content = document.querySelector('#content');
   var activity;
   content.innerHTML = "";
 
-  for (var date in responseJSON) {
+  for (var date in responseJSON[username]) {
     console.dir(date);
     content.innerHTML += "<div id=\"_".concat(date, "\"></div>");
     activity = document.querySelector("#_".concat(date.toString()));
     activity.innerHTML += "<h3>".concat(date, "</h3>");
 
-    for (var act in responseJSON[date]) {
-      console.dir(responseJSON[date][act]);
-      activity.innerHTML += "<b>Activity: ".concat(responseJSON[date][act].activity, "</b>");
-      if (responseJSON[date][act].notes) activity.innerHTML += "<p>Notes: ".concat(responseJSON[date][act].notes, "</p>");
+    for (var act in responseJSON[username][date]) {
+      console.dir(responseJSON[username][date][act]);
+      activity.innerHTML += "<b>Activity: ".concat(responseJSON[username][date][act].activity, "</b>");
+      if (responseJSON[username][date][act].notes) activity.innerHTML += "<p>Notes: ".concat(responseJSON[username][date][act].notes, "</p>");
     }
   }
 };
@@ -85,6 +86,7 @@ var requestUpdate = function requestUpdate(e, activityForm) {
 
 var sendPost = function sendPost(e, activityForm) {
   e.preventDefault();
+  var username = localStorage.getItem('username');
   var activityAction = activityForm.getAttribute('action');
   var activityMethod = activityForm.getAttribute('method');
   var dateField = activityForm.querySelector('#dateField');
@@ -99,7 +101,7 @@ var sendPost = function sendPost(e, activityForm) {
     return handleResponse(xhr);
   };
 
-  var formData = "date=".concat(dateField.value, "&activity=").concat(activityField.value, "&notes=").concat(notesField.value);
+  var formData = "username=".concat(username, "&date=").concat(dateField.value, "&activity=").concat(activityField.value, "&notes=").concat(notesField.value);
   xhr.send(formData);
   console.log(xhr);
   return false;
@@ -119,14 +121,13 @@ var sendUserName = function sendUserName(username) {
   var formData = "username=".concat(username);
   xhr.send(formData);
   return false;
-}; //returns true if username already exists
-
+};
 
 var checkUserName = function checkUserName(username) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', "/checkUser?username=".concat(username));
   xhr.setRequestHeader('Accept', 'application/json');
-  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); //checks usernames until a unique one is entered 
 
   xhr.onload = function () {
     var obj = JSON.parse(xhr.response);
@@ -152,7 +153,6 @@ var checkUserName = function checkUserName(username) {
 };
 
 var init = function init() {
-  var username = localStorage.getItem('username');
   var activityForm = document.querySelector('#activityForm');
 
   var addActivity = function addActivity(e) {
@@ -177,11 +177,12 @@ var userNamePopUp = function userNamePopUp() {
 
     do {
       p = prompt("Please enter a username", "");
-    } while (p == null || p == ""); // console.log(checkUserName(p));
-
+    } while (p == null || p == "");
 
     localStorage.setItem('username', p);
-    checkUserName(p); //sendUserName(p);
+    checkUserName(p);
+  } else {
+    checkUserName(localStorage.getItem('username'));
   }
 
   init();

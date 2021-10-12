@@ -41,24 +41,25 @@ const handleResponse = (xhr, display) => {
 };
 
 const displayActivities = (xhr) => {
+  const username = localStorage.getItem('username');
   const responseJSON = JSON.parse(xhr.response);
   const content = document.querySelector('#content');
   let activity;
 
   content.innerHTML = "";
 
-  for(const date in responseJSON) {
+  for(const date in responseJSON[username]) {
     console.dir(date);
     content.innerHTML += `<div id="_${date}"></div>`;
     activity = document.querySelector(`#_${date.toString()}`);
 
     activity.innerHTML += `<h3>${date}</h3>`;
 
-    for(const act in responseJSON[date]) {
-      console.dir(responseJSON[date][act]);
-      activity.innerHTML += `<b>Activity: ${responseJSON[date][act].activity}</b>`;
-      if(responseJSON[date][act].notes) 
-      activity.innerHTML += `<p>Notes: ${responseJSON[date][act].notes}</p>`;
+    for(const act in responseJSON[username][date]) {
+      console.dir(responseJSON[username][date][act]);
+      activity.innerHTML += `<b>Activity: ${responseJSON[username][date][act].activity}</b>`;
+      if(responseJSON[username][date][act].notes) 
+      activity.innerHTML += `<p>Notes: ${responseJSON[username][date][act].notes}</p>`;
     }
   }
 };
@@ -80,6 +81,8 @@ const requestUpdate = (e, activityForm) => {
 const sendPost = (e, activityForm) => {
   e.preventDefault();
 
+  const username = localStorage.getItem('username');
+
   const activityAction = activityForm.getAttribute('action');
   const activityMethod = activityForm.getAttribute('method');
 
@@ -95,7 +98,7 @@ const sendPost = (e, activityForm) => {
 
   xhr.onload = () => handleResponse(xhr);
 
-  const formData = `date=${dateField.value}&activity=${activityField.value}&notes=${notesField.value}`;
+  const formData = `username=${username}&date=${dateField.value}&activity=${activityField.value}&notes=${notesField.value}`;
   xhr.send(formData);
   console.log(xhr);
   return false;
@@ -118,7 +121,6 @@ const sendUserName = (username) => {
   return false;
 }
 
-//returns true if username already exists
 const checkUserName = (username) => {
   const xhr = new XMLHttpRequest();
 
@@ -126,6 +128,7 @@ const checkUserName = (username) => {
   xhr.setRequestHeader('Accept', 'application/json');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
+  //checks usernames until a unique one is entered 
   xhr.onload = () => {
     let obj = JSON.parse(xhr.response);
     console.log(obj);
@@ -149,7 +152,6 @@ const checkUserName = (username) => {
 }
 
 const init = () => {
-  const username = localStorage.getItem('username');
   const activityForm = document.querySelector('#activityForm');
   const addActivity = (e) => sendPost(e, activityForm);
   const getActivity = (e) => requestUpdate(e, activityForm);
@@ -171,14 +173,11 @@ const userNamePopUp = () => {
       p = prompt("Please enter a username", "");
     } while (p == null || p == "");
 
-   // console.log(checkUserName(p));
-
-    
-
     localStorage.setItem('username', p);
     checkUserName(p);
-    //sendUserName(p);
-  } 
+  } else {
+    checkUserName(localStorage.getItem('username'));
+  }
 
   init();
 };
