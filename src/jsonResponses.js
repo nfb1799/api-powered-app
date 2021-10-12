@@ -1,4 +1,4 @@
-const activities = {};
+const tasks = {};
 
 const respond = (request, response, status, content, type) => {
   response.writeHead(status, { 'Content-Type': type });
@@ -26,12 +26,12 @@ const notFound = (request, response) => {
 };
 
 // needs to be refactored for usernames!!
-const addActivity = (request, response, body) => {
+const addTask = (request, response, body) => {
   const responseJSON = {
-    message: 'Date and Activity are both required',
+    message: 'Date and task are both required',
   };
 
-  if (!body.date || !body.activity) {
+  if (!body.date || !body.task) {
     responseJSON.id = 'missingParams';
     return respondJSON(request, response, 400, responseJSON);
   }
@@ -40,13 +40,13 @@ const addActivity = (request, response, body) => {
 
   console.dir(body.date);
 
-  if (activities[body.username][body.date]) responseCode = 204; // updated
-  else activities[body.username][body.date] = {};
+  if (tasks[body.username][body.date]) responseCode = 204; // updated
+  else tasks[body.username][body.date] = {};
 
-  activities[body.username][body.date][body.activity] = {};
-  activities[body.username][body.date][body.activity].activity = body.activity;
-  if (body.notes) activities[body.username][body.date][body.activity].notes = body.notes;
-  console.dir(activities);
+  tasks[body.username][body.date][body.task] = {};
+  tasks[body.username][body.date][body.task].task = body.task;
+  tasks[body.username][body.date][body.task].type = body.type;
+  console.dir(tasks);
 
   if (responseCode === 201) {
     responseJSON.message = 'Created Successfully';
@@ -56,9 +56,9 @@ const addActivity = (request, response, body) => {
   return respondJSONMeta(request, response, responseCode);
 };
 
-const getActivities = (request, response) => {
+const getTasks = (request, response) => {
   if (request.method === 'GET') {
-    respondJSON(request, response, 200, activities);
+    respondJSON(request, response, 200, tasks);
   } else if (request.method === 'HEAD') {
     respondJSONMeta(request, response, 200);
   }
@@ -71,11 +71,11 @@ const addUser = (request, response, body) => {
 
   let responseCode = 201;
 
-  if (activities[body.username]) {
+  if (tasks[body.username]) {
     responseCode = 403;
     responseJSON.message = 'User already exists';
   } else {
-    activities[body.username] = {};
+    tasks[body.username] = {};
   }
 
   if (responseCode === 201) {
@@ -92,16 +92,16 @@ const checkUser = (request, response, body) => {
     result: 'false',
   };
 
-  console.log(activities[username]);
-  if (activities[username]) responseJSON.result = 'true';
+  console.log(tasks[username]);
+  if (tasks[username]) responseJSON.result = 'true';
 
   return respondJSON(request, response, 201, responseJSON);
 };
 
 module.exports = {
   notFound,
-  addActivity,
-  getActivities,
+  addTask,
+  getTasks,
   addUser,
   checkUser,
 };

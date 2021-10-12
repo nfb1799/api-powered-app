@@ -49,34 +49,34 @@ var handleResponse = function handleResponse(xhr, display) {
   }
 };
 
-var displayActivities = function displayActivities(xhr) {
+var displayTasks = function displayTasks(xhr) {
   var username = localStorage.getItem('username');
   var responseJSON = JSON.parse(xhr.response);
   var content = document.querySelector('#content');
-  var activity;
+  var task;
   content.innerHTML = "";
 
   for (var date in responseJSON[username]) {
     console.dir(date);
     content.innerHTML += "<div id=\"_".concat(date, "\"></div>");
-    activity = document.querySelector("#_".concat(date.toString()));
-    activity.innerHTML += "<h3>".concat(date, "</h3>");
+    task = document.querySelector("#_".concat(date.toString()));
+    task.innerHTML += "<h3>".concat(date, "</h3>");
 
-    for (var act in responseJSON[username][date]) {
-      console.dir(responseJSON[username][date][act]);
-      activity.innerHTML += "<b>Activity: ".concat(responseJSON[username][date][act].activity, "</b>");
-      if (responseJSON[username][date][act].notes) activity.innerHTML += "<p>Notes: ".concat(responseJSON[username][date][act].notes, "</p>");
+    for (var t in responseJSON[username][date]) {
+      console.dir(responseJSON[username][date][t]);
+      task.innerHTML += "<b>Task: ".concat(responseJSON[username][date][t].task, "</b>");
+      task.innerHTML += "<p class=\"".concat(responseJSON[username][date][t].type, "\">Type: ").concat(responseJSON[username][date][t].type, "</p>");
     }
   }
 };
 
-var requestUpdate = function requestUpdate(e, activityForm) {
+var requestUpdate = function requestUpdate(e, taskForm) {
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', '/getActivities');
+  xhr.open('GET', '/getTasks');
   xhr.setRequestHeader('Accept', 'application/json');
 
   xhr.onload = function () {
-    return displayActivities(xhr);
+    return displayTasks(xhr);
   };
 
   xhr.send();
@@ -84,16 +84,16 @@ var requestUpdate = function requestUpdate(e, activityForm) {
   return false;
 };
 
-var sendPost = function sendPost(e, activityForm) {
+var sendPost = function sendPost(e, taskForm) {
   e.preventDefault();
   var username = localStorage.getItem('username');
-  var activityAction = activityForm.getAttribute('action');
-  var activityMethod = activityForm.getAttribute('method');
-  var dateField = activityForm.querySelector('#dateField');
-  var activityField = activityForm.querySelector('#activityField');
-  var notesField = activityForm.querySelector('#notesField');
+  var taskAction = taskForm.getAttribute('action');
+  var taskMethod = taskForm.getAttribute('method');
+  var dateField = taskForm.querySelector('#dateField');
+  var taskField = taskForm.querySelector('#taskField');
+  var typeField = taskForm.querySelector('#typeField');
   var xhr = new XMLHttpRequest();
-  xhr.open(activityMethod, activityAction);
+  xhr.open(taskMethod, taskAction);
   xhr.setRequestHeader('Accept', 'application/json');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -101,7 +101,7 @@ var sendPost = function sendPost(e, activityForm) {
     return handleResponse(xhr);
   };
 
-  var formData = "username=".concat(username, "&date=").concat(dateField.value, "&activity=").concat(activityField.value, "&notes=").concat(notesField.value);
+  var formData = "username=".concat(username, "&date=").concat(dateField.value, "&task=").concat(taskField.value, "&type=").concat(typeField.value);
   xhr.send(formData);
   console.log(xhr);
   return false;
@@ -135,6 +135,7 @@ var checkUserName = function checkUserName(username) {
 
     if (obj.result == 'false') {
       sendUserName(username);
+      init();
     } else {
       var p;
 
@@ -153,22 +154,22 @@ var checkUserName = function checkUserName(username) {
 };
 
 var init = function init() {
-  var activityForm = document.querySelector('#activityForm');
+  var taskForm = document.querySelector('#taskForm');
 
-  var addActivity = function addActivity(e) {
-    return sendPost(e, activityForm);
+  var addTask = function addTask(e) {
+    return sendPost(e, taskForm);
   };
 
-  var getActivity = function getActivity(e) {
-    return requestUpdate(e, activityForm);
+  var getTask = function getTask(e) {
+    return requestUpdate(e, taskForm);
   };
 
-  activityForm.addEventListener('submit', addActivity);
-  activityForm.addEventListener('submit', getActivity); //console.log(localStorage.getItem('username'));
+  taskForm.addEventListener('submit', addTask);
+  taskForm.addEventListener('submit', getTask); //console.log(localStorage.getItem('username'));
   //console.log(checkUserName(localStorage.getItem('username')));
   //checkUserName(username);
 }; // https://www.w3schools.com/js/js_popup.asp
-// users need a username in order to see only their activities
+// users need a username in order to see only their tasks 
 
 
 var userNamePopUp = function userNamePopUp() {
@@ -184,8 +185,6 @@ var userNamePopUp = function userNamePopUp() {
   } else {
     checkUserName(localStorage.getItem('username'));
   }
-
-  init();
 };
 
 window.onload = userNamePopUp;

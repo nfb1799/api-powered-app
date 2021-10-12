@@ -40,37 +40,36 @@ const handleResponse = (xhr, display) => {
   }
 };
 
-const displayActivities = (xhr) => {
+const displayTasks = (xhr) => {
   const username = localStorage.getItem('username');
   const responseJSON = JSON.parse(xhr.response);
   const content = document.querySelector('#content');
-  let activity;
+  let task;
 
   content.innerHTML = "";
 
   for(const date in responseJSON[username]) {
     console.dir(date);
     content.innerHTML += `<div id="_${date}"></div>`;
-    activity = document.querySelector(`#_${date.toString()}`);
+    task = document.querySelector(`#_${date.toString()}`);
 
-    activity.innerHTML += `<h3>${date}</h3>`;
+    task.innerHTML += `<h3>${date}</h3>`;
 
-    for(const act in responseJSON[username][date]) {
-      console.dir(responseJSON[username][date][act]);
-      activity.innerHTML += `<b>Activity: ${responseJSON[username][date][act].activity}</b>`;
-      if(responseJSON[username][date][act].notes) 
-      activity.innerHTML += `<p>Notes: ${responseJSON[username][date][act].notes}</p>`;
+    for(const t in responseJSON[username][date]) {
+      console.dir(responseJSON[username][date][t]);
+      task.innerHTML += `<b>Task: ${responseJSON[username][date][t].task}</b>`;
+      task.innerHTML += `<p class="${responseJSON[username][date][t].type}">Type: ${responseJSON[username][date][t].type}</p>`;
     }
   }
 };
 
-const requestUpdate = (e, activityForm) => {
+const requestUpdate = (e, taskForm) => {
   const xhr = new XMLHttpRequest();
-  xhr.open('GET', '/getActivities');
+  xhr.open('GET', '/getTasks');
 
   xhr.setRequestHeader('Accept', 'application/json');
 
-  xhr.onload = () => displayActivities(xhr); 
+  xhr.onload = () => displayTasks(xhr); 
 
   xhr.send();
 
@@ -78,27 +77,27 @@ const requestUpdate = (e, activityForm) => {
   return false;
 };
 
-const sendPost = (e, activityForm) => {
+const sendPost = (e, taskForm) => {
   e.preventDefault();
 
   const username = localStorage.getItem('username');
 
-  const activityAction = activityForm.getAttribute('action');
-  const activityMethod = activityForm.getAttribute('method');
+  const taskAction = taskForm.getAttribute('action');
+  const taskMethod = taskForm.getAttribute('method');
 
-  const dateField = activityForm.querySelector('#dateField');
-  const activityField = activityForm.querySelector('#activityField');
-  const notesField = activityForm.querySelector('#notesField');
+  const dateField = taskForm.querySelector('#dateField');
+  const taskField = taskForm.querySelector('#taskField');
+  const typeField = taskForm.querySelector('#typeField');
 
   const xhr = new XMLHttpRequest();
-  xhr.open(activityMethod, activityAction);
+  xhr.open(taskMethod, taskAction);
 
   xhr.setRequestHeader('Accept', 'application/json');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
   xhr.onload = () => handleResponse(xhr);
 
-  const formData = `username=${username}&date=${dateField.value}&activity=${activityField.value}&notes=${notesField.value}`;
+  const formData = `username=${username}&date=${dateField.value}&task=${taskField.value}&type=${typeField.value}`;
   xhr.send(formData);
   console.log(xhr);
   return false;
@@ -135,6 +134,7 @@ const checkUserName = (username) => {
 
     if(obj.result == 'false') {
       sendUserName(username);
+      init();
     } else {
       let p;
       do {
@@ -152,18 +152,18 @@ const checkUserName = (username) => {
 }
 
 const init = () => {
-  const activityForm = document.querySelector('#activityForm');
-  const addActivity = (e) => sendPost(e, activityForm);
-  const getActivity = (e) => requestUpdate(e, activityForm);
-  activityForm.addEventListener('submit', addActivity);
-  activityForm.addEventListener('submit', getActivity);
+  const taskForm = document.querySelector('#taskForm');
+  const addTask = (e) => sendPost(e, taskForm);
+  const getTask = (e) => requestUpdate(e, taskForm);
+  taskForm.addEventListener('submit', addTask);
+  taskForm.addEventListener('submit', getTask);
   //console.log(localStorage.getItem('username'));
   //console.log(checkUserName(localStorage.getItem('username')));
   //checkUserName(username);
 };
 
 // https://www.w3schools.com/js/js_popup.asp
-// users need a username in order to see only their activities
+// users need a username in order to see only their tasks 
 const userNamePopUp = () => {
   
   if(localStorage.getItem('username') == null) {
@@ -178,8 +178,6 @@ const userNamePopUp = () => {
   } else {
     checkUserName(localStorage.getItem('username'));
   }
-
-  init();
 };
 
 window.onload = userNamePopUp;

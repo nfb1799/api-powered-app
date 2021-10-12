@@ -9,14 +9,20 @@
 <body>
   <section id="top">
     <h1>Calendar Maker Prototype</h1>
-    <form id="activityForm" action="/addActivity" method="post">
+    <form id="taskForm" action="/addTask" method="post">
       <label for="date">Date: </label>
       <input id="dateField" type="date" name="date" />
-      <label for="activity">Activity: </label>
-      <input id="activityField" type="text" name="activity" />
-      <label for="notes">Notes: </label>
-      <input id="notesField" type="text" name="notes" />
-      <input type="submit" value="Add Activity" />
+      <label for="task">Task: </label>
+      <input id="taskField" type="text" name="task" />
+      <label for="type">Type: </label>
+      <select id="typeField" name="type">
+        <option value="Appointment">Appointment</option>
+        <option value="Event">Event</option>
+        <option value="School">School</option>
+        <option value="Work">Work</option>
+        <option value="Other">Other</option>
+      </select>
+      <input type="submit" value="Add Task" />
     </form>
     <div id="response"></div>
   </section>

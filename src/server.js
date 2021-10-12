@@ -10,7 +10,7 @@ const urlStruct = {
   '/': htmlHandler.getIndex,
   '/style.css': htmlHandler.getStyle,
   '/bundle.js': htmlHandler.getBundle,
-  '/getActivities': jsonHandler.getActivities,
+  '/getTasks': jsonHandler.getTasks,
   '/addUser': jsonHandler.addUser,
   '/checkUser': jsonHandler.checkUser,
   notFound: jsonHandler.notFound,
@@ -33,7 +33,7 @@ const handlePost = (request, response, parsedURL) => {
     const bodyString = Buffer.concat(body).toString();
     const bodyParams = query.parse(bodyString);
 
-    if (parsedURL.pathname === '/addActivity') jsonHandler.addActivity(request, response, bodyParams);
+    if (parsedURL.pathname === '/addTask') jsonHandler.addTask(request, response, bodyParams);
     else if (parsedURL.pathname === '/addUser') jsonHandler.addUser(request, response, bodyParams);
     else if (parsedURL.pathname === '/checkUser') jsonHandler.checkUser(request, response, bodyParams);
   });

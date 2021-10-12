@@ -7,7 +7,7 @@
     grid-template-rows: auto auto;
 }
 
-#activityForm {
+#taskForm {
     grid-area: form;
     display: grid;
     grid-template-columns: auto auto;
@@ -28,14 +28,37 @@
 
 #content {
     display: grid;
+    grid-gap: 4px;
     grid-template-columns: repeat(4, 1fr);
 }
 
 #content div {
     box-shadow: 3px 10px 10px grey;
     padding: 0 0 1em 1em;
+    border-radius: 25px;
+    border: 1px solid grey;
 }
 
 h3 {
     margin: .5em 0 .5em 0;
+}
+
+.School {
+    background-color: hotpink;
+}
+
+.Appointment {
+    background-color: cyan;
+}
+
+.Work {
+    background-color: yellow;
+}
+
+.Event {
+    background-color: lightgreen;
+}
+
+.Other {
+    background-color: lightgrey;
 }
