@@ -1,11 +1,41 @@
+#top {
+    display: grid;
+    grid-template-areas: 
+        "h1 response"
+        "form response";
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: auto auto;
+}
+
 #activityForm {
+    grid-area: form;
     display: grid;
     grid-template-columns: auto auto;
     grid-template-rows: auto auto auto;
     width: 20%;
 }
 
+#top h1 {
+    grid-area: h1;
+}
+
+#response {
+    grid-area: response;
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+}
+
 #content {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+}
+
+#content div {
+    box-shadow: 10px 10px 10px grey;
+    padding: 0 0 1em 1em;
+}
+
+h3 {
+    margin: .5em 0 .5em 0;
 }

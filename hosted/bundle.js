@@ -13,43 +13,78 @@ var parseJSON = function parseJSON(xhr, content) {
 };
 
 var handleResponse = function handleResponse(xhr, display) {
-  var content = document.querySelector('#content');
-  /*
-  content.innerHTML = "";
-    
-  switch(xhr.status) {
+  var response = document.querySelector('#response');
+  response.innerHTML = "";
+
+  switch (xhr.status) {
     case 200:
-      content.innerHTML = '<b>Success!</b>';
+      response.innerHTML = '<b>Success!</b>';
       break;
+
     case 201:
-      content.innerHTML = '<b>Created!</b>';
+      response.innerHTML = '<b>Created!</b>';
       break;
+
     case 204:
-      content.innerHTML = '<b>Updated</b>'
+      response.innerHTML = '<b>Updated</b>';
       break;
+
     case 400:
-      content.innerHTML = '<b>Bad Request :(</b>';
+      response.innerHTML = '<b>Bad Request :(</b>';
       break;
+
     case 404:
-      content.innerHTML = '<b>Resource Not Found</b>'; 
+      response.innerHTML = '<b>Resource Not Found</b>';
       break;
+
     default:
-      content.innerHTML = '<p>Error code not implemented by client! :(</p>';
+      response.innerHTML = '<p>Error code not implemented by client! :(</p>';
       break;
   }
-  console.dir(xhr);
-  if(xhr.response) {
-    parseJSON(xhr, content);
-  }*/
-};
 
-var displayActivity = function displayActivity(xhr, date) {
+  console.dir(xhr);
+
+  if (xhr.response) {
+    parseJSON(xhr, response);
+  }
+};
+/*
+const displayActivity = (xhr, date) => {
+  const responseJSON = JSON.parse(xhr.response);
+
+  const content = document.querySelector('#content');
+  
+  content.innerHTML += `<div id="_${date}"></div>`;
+  
+  const activity = document.querySelector(`#_${date.toString()}`);
+
+  if(responseJSON[date]) {
+
+    activity.innerHTML += `<h3>${date}</h3>`;
+
+    for(const act in responseJSON[date]) {
+      console.dir(responseJSON[date][act]);
+      activity.innerHTML += `<b>Activity: ${responseJSON[date][act].activity}</b>`;
+      if(responseJSON[date][act].notes) 
+      activity.innerHTML += `<p>Notes: ${responseJSON[date][act].notes}</p>`;
+    }
+  } else {
+    content.innerHTML = `No activities found on ${date}`;
+  }
+};
+*/
+
+
+var displayActivities = function displayActivities(xhr) {
   var responseJSON = JSON.parse(xhr.response);
   var content = document.querySelector('#content');
-  content.innerHTML += "<div id=\"_".concat(date, "\"></div>");
-  var activity = document.querySelector("#_".concat(date.toString()));
+  var activity;
+  content.innerHTML = "";
 
-  if (responseJSON[date]) {
+  for (var date in responseJSON) {
+    console.dir(date);
+    content.innerHTML += "<div id=\"_".concat(date, "\"></div>");
+    activity = document.querySelector("#_".concat(date.toString()));
     activity.innerHTML += "<h3>".concat(date, "</h3>");
 
     for (var act in responseJSON[date]) {
@@ -57,10 +92,6 @@ var displayActivity = function displayActivity(xhr, date) {
       activity.innerHTML += "<b>Activity: ".concat(responseJSON[date][act].activity, "</b>");
       if (responseJSON[date][act].notes) activity.innerHTML += "<p>Notes: ".concat(responseJSON[date][act].notes, "</p>");
     }
-
-    activity.innerHTML += '</div>';
-  } else {
-    content.innerHTML = "No activities found on ".concat(date);
   }
 };
 
@@ -71,7 +102,7 @@ var requestUpdate = function requestUpdate(e, activityForm) {
   xhr.setRequestHeader('Accept', 'application/json');
 
   xhr.onload = function () {
-    return displayActivity(xhr, date);
+    return displayActivities(xhr);
   };
 
   xhr.send();
