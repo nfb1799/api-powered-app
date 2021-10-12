@@ -64,8 +64,6 @@ const displayActivities = (xhr) => {
 };
 
 const requestUpdate = (e, activityForm) => {
-  const date = activityForm.querySelector('#dateField').value;
-  
   const xhr = new XMLHttpRequest();
   xhr.open('GET', '/getActivities');
 
@@ -120,21 +118,24 @@ const sendUserName = (username) => {
   return false;
 }
 
+//returns true if username already exists
 const checkUserName = (username) => {
   const xhr = new XMLHttpRequest();
 
-  xhr.open('POST', 'checkUser');
+  xhr.open('GET', 'checkUser');
   xhr.setRequestHeader('Accept', 'application/json');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
   xhr.onload = () => {
     let obj = JSON.parse(xhr.response);
-    if(obj.result == 'false')
-      sendUserName(localStorage.getItem('username'));
+    //if(obj.result == 'false')
+      //sendUserName(localStorage.getItem('username'));
+    return (obj.result == 'true');
   };
 
   const formData = `username=${username}`;
   xhr.send(formData);
+  console.log(xhr);
   
   return false; 
 }
@@ -145,8 +146,8 @@ const init = () => {
   const getActivity = (e) => requestUpdate(e, activityForm);
   activityForm.addEventListener('submit', addActivity);
   activityForm.addEventListener('submit', getActivity);
-  console.log(localStorage.getItem('username'));
-  checkUserName(localStorage.getItem('username'));
+  //console.log(localStorage.getItem('username'));
+  //console.log(checkUserName(localStorage.getItem('username')));
 };
 
 // https://www.w3schools.com/js/js_popup.asp
@@ -160,8 +161,12 @@ const userNamePopUp = () => {
       p = prompt("Please enter a username", "");
     } while (p == null || p == "");
 
+    while(checkUserName(p)) { //loop until a valid name is entered
+      p = prompt("Username is already in use. Enter a different username.", "");
+    }
+    
+    console.log(checkUserName(p));
     localStorage.setItem('username', p);
-    //sendUserName(p);
   } 
 
   init();
