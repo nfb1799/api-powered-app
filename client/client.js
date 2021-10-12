@@ -10,8 +10,10 @@ const parseJSON = (xhr, content) => {
 
 const handleResponse = (xhr, display) => {
   const content = document.querySelector('#content');
+  /*
   content.innerHTML = "";
 
+  
   switch(xhr.status) {
     case 200:
       content.innerHTML = '<b>Success!</b>';
@@ -35,26 +37,29 @@ const handleResponse = (xhr, display) => {
   console.dir(xhr);
   if(xhr.response) {
     parseJSON(xhr, content);
-  }
+  }*/
 };
 
 const displayActivity = (xhr, date) => {
   const responseJSON = JSON.parse(xhr.response);
 
   const content = document.querySelector('#content');
+  
+  content.innerHTML += `<div id="_${date}"></div>`;
+  
+  const activity = document.querySelector(`#_${date.toString()}`);
 
   if(responseJSON[date]) {
-    content.innerHTML = `<h3>${date}</h3>`;
+
+    activity.innerHTML += `<h3>${date}</h3>`;
 
     for(const act in responseJSON[date]) {
       console.dir(responseJSON[date][act]);
-      content.innerHTML += `<b>${responseJSON[date][act].activity}</b>`;
+      activity.innerHTML += `<b>Activity: ${responseJSON[date][act].activity}</b>`;
       if(responseJSON[date][act].notes) 
-        content.innerHTML += `<p>${responseJSON[date][act].notes}</p>`;
+      activity.innerHTML += `<p>Notes: ${responseJSON[date][act].notes}</p>`;
     }
-    /*content.innerHTML = `<h3>${date}</h3>`;
-    content.innerHTML += `<b>${responseJSON[date].activity[0]}</b>`;
-    content.innerHTML += `<p>Notes: ${responseJSON[date].notes}</p>`;*/
+    activity.innerHTML += '</div>';
   } else {
     content.innerHTML = `No activities found on ${date}`;
   }

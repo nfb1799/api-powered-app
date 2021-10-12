@@ -14,57 +14,51 @@ var parseJSON = function parseJSON(xhr, content) {
 
 var handleResponse = function handleResponse(xhr, display) {
   var content = document.querySelector('#content');
+  /*
   content.innerHTML = "";
-
-  switch (xhr.status) {
+    
+  switch(xhr.status) {
     case 200:
       content.innerHTML = '<b>Success!</b>';
       break;
-
     case 201:
       content.innerHTML = '<b>Created!</b>';
       break;
-
     case 204:
-      content.innerHTML = '<b>Updated</b>';
+      content.innerHTML = '<b>Updated</b>'
       break;
-
     case 400:
       content.innerHTML = '<b>Bad Request :(</b>';
       break;
-
     case 404:
-      content.innerHTML = '<b>Resource Not Found</b>';
+      content.innerHTML = '<b>Resource Not Found</b>'; 
       break;
-
     default:
       content.innerHTML = '<p>Error code not implemented by client! :(</p>';
       break;
   }
-
   console.dir(xhr);
-
-  if (xhr.response) {
+  if(xhr.response) {
     parseJSON(xhr, content);
-  }
+  }*/
 };
 
 var displayActivity = function displayActivity(xhr, date) {
   var responseJSON = JSON.parse(xhr.response);
   var content = document.querySelector('#content');
+  content.innerHTML += "<div id=\"_".concat(date, "\"></div>");
+  var activity = document.querySelector("#_".concat(date.toString()));
 
   if (responseJSON[date]) {
-    content.innerHTML = "<h3>".concat(date, "</h3>");
+    activity.innerHTML += "<h3>".concat(date, "</h3>");
 
     for (var act in responseJSON[date]) {
       console.dir(responseJSON[date][act]);
-      content.innerHTML += "<b>".concat(responseJSON[date][act].activity, "</b>");
-      if (responseJSON[date][act].notes) content.innerHTML += "<p>".concat(responseJSON[date][act].notes, "</p>");
+      activity.innerHTML += "<b>Activity: ".concat(responseJSON[date][act].activity, "</b>");
+      if (responseJSON[date][act].notes) activity.innerHTML += "<p>Notes: ".concat(responseJSON[date][act].notes, "</p>");
     }
-    /*content.innerHTML = `<h3>${date}</h3>`;
-    content.innerHTML += `<b>${responseJSON[date].activity[0]}</b>`;
-    content.innerHTML += `<p>Notes: ${responseJSON[date].notes}</p>`;*/
 
+    activity.innerHTML += '</div>';
   } else {
     content.innerHTML = "No activities found on ".concat(date);
   }

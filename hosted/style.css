@@ -4,3 +4,8 @@
     grid-template-rows: auto auto auto;
     width: 20%;
 }
+
+#content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
