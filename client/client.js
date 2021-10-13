@@ -187,6 +187,8 @@ const userNamePopUp = () => {
 
     localStorage.setItem('username', p);
     checkUserName(p);
+  } else {
+    init();
   }
 };
 
