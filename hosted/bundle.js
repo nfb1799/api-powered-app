@@ -111,7 +111,8 @@ var sendPost = function sendPost(e, taskForm) {
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
   xhr.onload = function () {
-    return handleResponse(xhr);
+    handleResponse(xhr);
+    requestUpdate(e);
   };
 
   var formData = "username=".concat(username, "&date=").concat(dateField.value, "&task=").concat(taskField.value, "&type=").concat(typeField.value);
@@ -169,12 +170,7 @@ var init = function init() {
     return sendPost(e, taskForm);
   };
 
-  var getTask = function getTask(e) {
-    return requestUpdate(e);
-  };
-
   taskForm.addEventListener('submit', addTask);
-  taskForm.addEventListener('submit', getTask);
   var filterForm = document.querySelector('#filterForm');
 
   var filterTasks = function filterTasks(e) {

@@ -112,7 +112,7 @@ const sendPost = (e, taskForm) => {
   xhr.setRequestHeader('Accept', 'application/json');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-  xhr.onload = () => handleResponse(xhr);
+  xhr.onload = () => { handleResponse(xhr); requestUpdate(e); };
 
   const formData = `username=${username}&date=${dateField.value}&task=${taskField.value}&type=${typeField.value}`;
   xhr.send(formData);
@@ -167,9 +167,7 @@ const checkUserName = (username) => {
 const init = () => {
   const taskForm = document.querySelector('#taskForm');
   const addTask = (e) => sendPost(e, taskForm);
-  const getTask = (e) => requestUpdate(e);
   taskForm.addEventListener('submit', addTask);
-  taskForm.addEventListener('submit', getTask);
 
   const filterForm = document.querySelector('#filterForm');
   const filterTasks = (e) => filterByTask(e, filterForm);
