@@ -87,6 +87,7 @@ const requestUpdate = (e, form) => {
 
 // Gets a filtered list of tasks from the server and displays them
 const filterByTask = (e, filterForm) => {
+  console.log(filterForm.getAttribute('action'));
   const url = filterForm.querySelector('#typeFilter').value;
   const username = localStorage.getItem('username');
 

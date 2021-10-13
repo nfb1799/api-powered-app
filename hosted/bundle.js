@@ -89,6 +89,7 @@ var requestUpdate = function requestUpdate(e, form) {
 
 
 var filterByTask = function filterByTask(e, filterForm) {
+  console.log(filterForm.getAttribute('action'));
   var url = filterForm.querySelector('#typeFilter').value;
   var username = localStorage.getItem('username');
   var xhr = new XMLHttpRequest();
