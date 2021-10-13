@@ -102,18 +102,6 @@ const addUser = (request, response, body) => {
   return respondJSON(request, response, 201, responseJSON);
 };
 
-// returns true if the username exists
-const checkUser = (request, response, body, params) => {
-  const { username } = params;
-  const responseJSON = {
-    result: 'false',
-  };
-
-  if (tasks[username]) responseJSON.result = 'true';
-
-  return respondJSON(request, response, 201, responseJSON);
-};
-
 module.exports = {
   notFound,
   addTask,
