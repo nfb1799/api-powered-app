@@ -10,7 +10,7 @@ var parseJSON = function parseJSON(xhr, content) {
   }
 };
 
-var handleResponse = function handleResponse(xhr, display) {
+var handleResponse = function handleResponse(xhr) {
   var response = document.querySelector('#response');
   var username = document.querySelector('#username');
   response.innerHTML = "";
@@ -42,6 +42,7 @@ var handleResponse = function handleResponse(xhr, display) {
   }
 
   username.innerHTML = "User: ".concat(localStorage.getItem('username'));
+  console.log(xhr);
 
   if (xhr.response) {
     parseJSON(xhr, response);
@@ -127,39 +128,12 @@ var sendUserName = function sendUserName(username) {
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
   xhr.onload = function () {
-    return handleResponse(xhr);
+    handleResponse(xhr);
+    init();
   };
 
   var formData = "username=".concat(username);
   xhr.send(formData);
-  return false;
-};
-
-var checkUserName = function checkUserName(username) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', "/checkUser?username=".concat(username));
-  xhr.setRequestHeader('Accept', 'application/json');
-  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); //checks usernames until a unique one is entered 
-
-  xhr.onload = function () {
-    var obj = JSON.parse(xhr.response);
-
-    if (obj.result == 'false') {
-      sendUserName(username);
-      init();
-    } else {
-      var p;
-
-      do {
-        p = prompt("Username is already in use. Enter a different username.", "");
-      } while (p == null || p == "");
-
-      localStorage.setItem('username', p);
-      checkUserName(p);
-    }
-  };
-
-  xhr.send();
   return false;
 };
 
@@ -191,10 +165,10 @@ var userNamePopUp = function userNamePopUp() {
     } while (p == null || p == "");
 
     localStorage.setItem('username', p);
-    checkUserName(p);
-  } else {
-    init();
+    sendUserName(p);
   }
+
+  sendUserName(localStorage.getItem('username'));
 };
 
 window.onload = userNamePopUp;

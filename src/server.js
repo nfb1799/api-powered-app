@@ -12,7 +12,6 @@ const urlStruct = {
   '/bundle.js': htmlHandler.getBundle,
   '/getTasks': jsonHandler.getTasks,
   '/addUser': jsonHandler.addUser,
-  '/checkUser': jsonHandler.checkUser,
   notFound: jsonHandler.notFound,
 };
 

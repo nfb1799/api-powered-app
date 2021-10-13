@@ -90,23 +90,16 @@ const getTasks = (request, response, body, params) => {
 
 const addUser = (request, response, body) => {
   const responseJSON = {
-    message: 'Username is required',
+    message: 'Username Created Successfully'
   };
 
-  let responseCode = 201;
-
   if (tasks[body.username]) {
-    responseCode = 403;
-    responseJSON.message = 'User already exists';
+    responseJSON.message = 'User signed in';
   } else {
     tasks[body.username] = {};
   }
 
-  if (responseCode === 201) {
-    responseJSON.message = 'Username Created Successfully';
-  }
-
-  return respondJSON(request, response, responseCode, responseJSON);
+  return respondJSON(request, response, 201, responseJSON);
 };
 
 // returns true if the username exists
@@ -126,5 +119,4 @@ module.exports = {
   addTask,
   getTasks,
   addUser,
-  checkUser,
 };

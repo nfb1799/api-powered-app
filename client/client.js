@@ -7,7 +7,7 @@ const parseJSON = (xhr, content) => {
   }
 };
 
-const handleResponse = (xhr, display) => {
+const handleResponse = (xhr) => {
   const response = document.querySelector('#response');
   const username = document.querySelector('#username');
   
@@ -37,6 +37,7 @@ const handleResponse = (xhr, display) => {
 
   username.innerHTML = `User: ${localStorage.getItem('username')}`;
 
+  console.log(xhr);
   if(xhr.response) {
     parseJSON(xhr, response);
   }
@@ -127,41 +128,12 @@ const sendUserName = (username) => {
   xhr.setRequestHeader('Accept', 'application/json');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-  xhr.onload = () => handleResponse(xhr);
+  xhr.onload = () => { handleResponse(xhr); init(); };
 
   const formData = `username=${username}`;
   xhr.send(formData);
 
   return false;
-}
-
-const checkUserName = (username) => {
-  const xhr = new XMLHttpRequest();
-
-  xhr.open('GET', `/checkUser?username=${username}`);
-  xhr.setRequestHeader('Accept', 'application/json');
-  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-  //checks usernames until a unique one is entered 
-  xhr.onload = () => {
-    let obj = JSON.parse(xhr.response);
-
-    if(obj.result == 'false') {
-      sendUserName(username);
-      init();
-    } else {
-      let p;
-      do {
-        p = prompt("Username is already in use. Enter a different username.", "");
-      } while (p == null || p == "");
-      localStorage.setItem('username', p);
-      checkUserName(p);
-    }
-  };
-
-  xhr.send();
-  
-  return false; 
 }
 
 const init = () => {
@@ -186,10 +158,10 @@ const userNamePopUp = () => {
     } while (p == null || p == "");
 
     localStorage.setItem('username', p);
-    checkUserName(p);
-  } else {
-    init();
-  }
+    sendUserName(p);
+  } 
+  
+  sendUserName(localStorage.getItem('username'));
 };
 
 window.onload = userNamePopUp;
