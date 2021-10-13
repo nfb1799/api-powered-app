@@ -5,7 +5,6 @@ const parseJSON = (xhr, content) => {
     p.textContent = `Message: ${obj.message}`;
     content.appendChild(p);
   }
-  console.dir(obj);
 };
 
 const handleResponse = (xhr, display) => {
@@ -34,7 +33,7 @@ const handleResponse = (xhr, display) => {
       response.innerHTML = '<p>Error code not implemented by client! :(</p>';
       break;
   }
-  console.dir(xhr);
+
   if(xhr.response) {
     parseJSON(xhr, response);
   }
@@ -49,21 +48,19 @@ const displayTasks = (xhr) => {
   content.innerHTML = "";
 
   for(const date in responseJSON[username]) {
-    console.dir(date);
     content.innerHTML += `<div id="_${date}"></div>`;
     task = document.querySelector(`#_${date.toString()}`);
 
     task.innerHTML += `<h3>${date}</h3>`;
 
     for(const t in responseJSON[username][date]) {
-      console.dir(responseJSON[username][date][t]);
       task.innerHTML += `<b>Task: ${responseJSON[username][date][t].task}</b>`;
       task.innerHTML += `<p class="${responseJSON[username][date][t].type}">Type: ${responseJSON[username][date][t].type}</p>`;
     }
   }
 };
 
-const requestUpdate = (e, taskForm) => {
+const requestUpdate = (e, form) => {
   const xhr = new XMLHttpRequest();
   xhr.open('GET', '/getTasks');
 
@@ -76,6 +73,23 @@ const requestUpdate = (e, taskForm) => {
   e.preventDefault();
   return false;
 };
+
+const filterByTask = (e, filterForm) => {
+  const url = filterForm.querySelector('#typeFilter').value;
+  const username = localStorage.getItem('username');
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', `${url}&username=${username}`);
+
+  xhr.setRequestHeader('Accept', 'application/json');
+
+  xhr.onload = () => displayTasks(xhr); 
+
+  xhr.send();
+
+  e.preventDefault();
+  return false;
+}
 
 const sendPost = (e, taskForm) => {
   e.preventDefault();
@@ -99,7 +113,6 @@ const sendPost = (e, taskForm) => {
 
   const formData = `username=${username}&date=${dateField.value}&task=${taskField.value}&type=${typeField.value}`;
   xhr.send(formData);
-  console.log(xhr);
   return false;
 };
 
@@ -108,7 +121,6 @@ const sendUserName = (username) => {
 
   xhr.open('POST', '/addUser');
 
-  console.log(xhr);
   xhr.setRequestHeader('Accept', 'application/json');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -130,7 +142,6 @@ const checkUserName = (username) => {
   //checks usernames until a unique one is entered 
   xhr.onload = () => {
     let obj = JSON.parse(xhr.response);
-    console.log(obj);
 
     if(obj.result == 'false') {
       sendUserName(username);
@@ -146,7 +157,6 @@ const checkUserName = (username) => {
   };
 
   xhr.send();
-  console.log(xhr);
   
   return false; 
 }
@@ -154,12 +164,13 @@ const checkUserName = (username) => {
 const init = () => {
   const taskForm = document.querySelector('#taskForm');
   const addTask = (e) => sendPost(e, taskForm);
-  const getTask = (e) => requestUpdate(e, taskForm);
+  const getTask = (e) => requestUpdate(e);
   taskForm.addEventListener('submit', addTask);
   taskForm.addEventListener('submit', getTask);
-  //console.log(localStorage.getItem('username'));
-  //console.log(checkUserName(localStorage.getItem('username')));
-  //checkUserName(username);
+
+  const filterForm = document.querySelector('#filterForm');
+  const filterTasks = (e) => filterByTask(e, filterForm);
+  filterForm.addEventListener('change', filterTasks);
 };
 
 // https://www.w3schools.com/js/js_popup.asp

@@ -38,15 +38,12 @@ const addTask = (request, response, body) => {
 
   let responseCode = 201; // success
 
-  console.dir(body.date);
-
   if (tasks[body.username][body.date]) responseCode = 204; // updated
   else tasks[body.username][body.date] = {};
 
   tasks[body.username][body.date][body.task] = {};
   tasks[body.username][body.date][body.task].task = body.task;
   tasks[body.username][body.date][body.task].type = body.type;
-  console.dir(tasks);
 
   if (responseCode === 201) {
     responseJSON.message = 'Created Successfully';
@@ -56,11 +53,38 @@ const addTask = (request, response, body) => {
   return respondJSONMeta(request, response, responseCode);
 };
 
-const getTasks = (request, response) => {
-  if (request.method === 'GET') {
-    respondJSON(request, response, 200, tasks);
-  } else if (request.method === 'HEAD') {
-    respondJSONMeta(request, response, 200);
+const filterTasks = (username, type) => {
+  const filteredTasks = {};
+  filteredTasks[username] = {};
+  Object.keys(tasks[username]).forEach((date) => {
+    Object.entries(tasks[username][date]).forEach((e) => {
+      if (e[1].type === type) {
+        filteredTasks[username][date] = {};
+        filteredTasks[username][date][e[0]] = {};
+        filteredTasks[username][date][e[0]].task = e[1].task;
+        filteredTasks[username][date][e[0]].type = e[1].type;
+      }
+    });
+  });
+
+  return filteredTasks;
+};
+
+const getTasks = (request, response, body, params) => {
+  if (!params.type) {
+    if (request.method === 'GET') {
+      respondJSON(request, response, 200, tasks);
+    } else if (request.method === 'HEAD') {
+      respondJSONMeta(request, response, 200);
+    }
+  } else {
+    const filteredTasks = filterTasks(params.username, params.type);
+    console.log(filteredTasks);
+    if (request.method === 'GET') {
+      respondJSON(request, response, 200, filteredTasks);
+    } else if (request.method === 'HEAD') {
+      respondJSONMeta(request, response, 200);
+    }
   }
 };
 
@@ -86,13 +110,12 @@ const addUser = (request, response, body) => {
 };
 
 // returns true if the username exists
-const checkUser = (request, response, body) => {
-  const username = body.query.slice(9); // query is 'username='
+const checkUser = (request, response, body, params) => {
+  const { username } = params;
   const responseJSON = {
     result: 'false',
   };
 
-  console.log(tasks[username]);
   if (tasks[username]) responseJSON.result = 'true';
 
   return respondJSON(request, response, 201, responseJSON);

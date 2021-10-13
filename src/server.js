@@ -35,17 +35,17 @@ const handlePost = (request, response, parsedURL) => {
 
     if (parsedURL.pathname === '/addTask') jsonHandler.addTask(request, response, bodyParams);
     else if (parsedURL.pathname === '/addUser') jsonHandler.addUser(request, response, bodyParams);
-    else if (parsedURL.pathname === '/checkUser') jsonHandler.checkUser(request, response, bodyParams);
   });
 };
 
 const onRequest = (request, response) => {
   const parsedURL = url.parse(request.url);
+  const params = query.parse(parsedURL.query);
 
   if (request.method === 'POST') {
-    handlePost(request, response, parsedURL);
+    handlePost(request, response, parsedURL, params);
   } else if (urlStruct[parsedURL.pathname]) {
-    urlStruct[parsedURL.pathname](request, response, parsedURL);
+    urlStruct[parsedURL.pathname](request, response, parsedURL, params);
   } else {
     urlStruct.notFound(request, response);
   }

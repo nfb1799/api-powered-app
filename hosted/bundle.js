@@ -8,8 +8,6 @@ var parseJSON = function parseJSON(xhr, content) {
     p.textContent = "Message: ".concat(obj.message);
     content.appendChild(p);
   }
-
-  console.dir(obj);
 };
 
 var handleResponse = function handleResponse(xhr, display) {
@@ -42,8 +40,6 @@ var handleResponse = function handleResponse(xhr, display) {
       break;
   }
 
-  console.dir(xhr);
-
   if (xhr.response) {
     parseJSON(xhr, response);
   }
@@ -57,22 +53,36 @@ var displayTasks = function displayTasks(xhr) {
   content.innerHTML = "";
 
   for (var date in responseJSON[username]) {
-    console.dir(date);
     content.innerHTML += "<div id=\"_".concat(date, "\"></div>");
     task = document.querySelector("#_".concat(date.toString()));
     task.innerHTML += "<h3>".concat(date, "</h3>");
 
     for (var t in responseJSON[username][date]) {
-      console.dir(responseJSON[username][date][t]);
       task.innerHTML += "<b>Task: ".concat(responseJSON[username][date][t].task, "</b>");
       task.innerHTML += "<p class=\"".concat(responseJSON[username][date][t].type, "\">Type: ").concat(responseJSON[username][date][t].type, "</p>");
     }
   }
 };
 
-var requestUpdate = function requestUpdate(e, taskForm) {
+var requestUpdate = function requestUpdate(e, form) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', '/getTasks');
+  xhr.setRequestHeader('Accept', 'application/json');
+
+  xhr.onload = function () {
+    return displayTasks(xhr);
+  };
+
+  xhr.send();
+  e.preventDefault();
+  return false;
+};
+
+var filterByTask = function filterByTask(e, filterForm) {
+  var url = filterForm.querySelector('#typeFilter').value;
+  var username = localStorage.getItem('username');
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', "".concat(url, "&username=").concat(username));
   xhr.setRequestHeader('Accept', 'application/json');
 
   xhr.onload = function () {
@@ -103,14 +113,12 @@ var sendPost = function sendPost(e, taskForm) {
 
   var formData = "username=".concat(username, "&date=").concat(dateField.value, "&task=").concat(taskField.value, "&type=").concat(typeField.value);
   xhr.send(formData);
-  console.log(xhr);
   return false;
 };
 
 var sendUserName = function sendUserName(username) {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', '/addUser');
-  console.log(xhr);
   xhr.setRequestHeader('Accept', 'application/json');
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -131,7 +139,6 @@ var checkUserName = function checkUserName(username) {
 
   xhr.onload = function () {
     var obj = JSON.parse(xhr.response);
-    console.log(obj);
 
     if (obj.result == 'false') {
       sendUserName(username);
@@ -149,7 +156,6 @@ var checkUserName = function checkUserName(username) {
   };
 
   xhr.send();
-  console.log(xhr);
   return false;
 };
 
@@ -161,13 +167,18 @@ var init = function init() {
   };
 
   var getTask = function getTask(e) {
-    return requestUpdate(e, taskForm);
+    return requestUpdate(e);
   };
 
   taskForm.addEventListener('submit', addTask);
-  taskForm.addEventListener('submit', getTask); //console.log(localStorage.getItem('username'));
-  //console.log(checkUserName(localStorage.getItem('username')));
-  //checkUserName(username);
+  taskForm.addEventListener('submit', getTask);
+  var filterForm = document.querySelector('#filterForm');
+
+  var filterTasks = function filterTasks(e) {
+    return filterByTask(e, filterForm);
+  };
+
+  filterForm.addEventListener('change', filterTasks);
 }; // https://www.w3schools.com/js/js_popup.asp
 // users need a username in order to see only their tasks 
 
