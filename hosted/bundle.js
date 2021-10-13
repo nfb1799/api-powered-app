@@ -1,5 +1,6 @@
 "use strict";
 
+// Parses a basic JSON object for its message and displays it
 var parseJSON = function parseJSON(xhr, content) {
   var obj = JSON.parse(xhr.response);
 
@@ -8,7 +9,8 @@ var parseJSON = function parseJSON(xhr, content) {
     p.textContent = "".concat(obj.message);
     content.appendChild(p);
   }
-};
+}; // Handles JSON responses from the server and updates HTML accordingly
+
 
 var handleResponse = function handleResponse(xhr) {
   var response = document.querySelector('#response');
@@ -41,20 +43,22 @@ var handleResponse = function handleResponse(xhr) {
       break;
   }
 
-  username.innerHTML = "User: ".concat(localStorage.getItem('username'));
-  console.log(xhr);
+  username.innerHTML = "User: ".concat(localStorage.getItem('username')); // If there's a message, parse and display it
 
   if (xhr.response) {
     parseJSON(xhr, response);
   }
-};
+}; // Displays tasks in bubbles separated by dates
+// xhr.response must be a list of tasks for a specific user
+
 
 var displayTasks = function displayTasks(xhr) {
   var username = localStorage.getItem('username');
   var responseJSON = JSON.parse(xhr.response);
   var content = document.querySelector('#content');
   var task;
-  content.innerHTML = "";
+  content.innerHTML = ""; // Separates bubbles by date
+  // Multiple tasks can appear on the same date
 
   for (var date in responseJSON[username]) {
     content.innerHTML += "<div id=\"_".concat(date, "\"></div>");
@@ -66,7 +70,8 @@ var displayTasks = function displayTasks(xhr) {
       task.innerHTML += "<p class=\"".concat(responseJSON[username][date][t].type, "\">Type: ").concat(responseJSON[username][date][t].type, "</p>");
     }
   }
-};
+}; // Gets a full list of tasks from the server and displays them
+
 
 var requestUpdate = function requestUpdate(e, form) {
   var xhr = new XMLHttpRequest();
@@ -80,7 +85,8 @@ var requestUpdate = function requestUpdate(e, form) {
   xhr.send();
   e.preventDefault();
   return false;
-};
+}; // Gets a filtered list of tasks from the server and displays them
+
 
 var filterByTask = function filterByTask(e, filterForm) {
   var url = filterForm.querySelector('#typeFilter').value;
@@ -96,7 +102,8 @@ var filterByTask = function filterByTask(e, filterForm) {
   xhr.send();
   e.preventDefault();
   return false;
-};
+}; // Sends task data to the server to be stored by username
+
 
 var sendPost = function sendPost(e, taskForm) {
   e.preventDefault();
@@ -119,7 +126,8 @@ var sendPost = function sendPost(e, taskForm) {
   var formData = "username=".concat(username, "&date=").concat(dateField.value, "&task=").concat(taskField.value, "&type=").concat(typeField.value);
   xhr.send(formData);
   return false;
-};
+}; // Sends a username to the server and runs init() onload
+
 
 var sendUserName = function sendUserName(username) {
   var xhr = new XMLHttpRequest();
@@ -153,7 +161,7 @@ var init = function init() {
 
   filterForm.addEventListener('change', filterTasks);
 }; // https://www.w3schools.com/js/js_popup.asp
-// users need a username in order to see only their tasks 
+// Users need a username in order to see only their tasks 
 
 
 var userNamePopUp = function userNamePopUp() {
@@ -165,7 +173,6 @@ var userNamePopUp = function userNamePopUp() {
     } while (p == null || p == "");
 
     localStorage.setItem('username', p);
-    sendUserName(p);
   }
 
   sendUserName(localStorage.getItem('username'));

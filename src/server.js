@@ -15,6 +15,8 @@ const urlStruct = {
   notFound: jsonHandler.notFound,
 };
 
+// Handles all POST requests
+// addTask() and addUser()
 const handlePost = (request, response, parsedURL) => {
   const body = [];
 
@@ -37,6 +39,7 @@ const handlePost = (request, response, parsedURL) => {
   });
 };
 
+// Handles requests to the server
 const onRequest = (request, response) => {
   const parsedURL = url.parse(request.url);
   const params = query.parse(parsedURL.query);

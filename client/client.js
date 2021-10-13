@@ -1,3 +1,4 @@
+// Parses a basic JSON object for its message and displays it
 const parseJSON = (xhr, content) => {
   const obj = JSON.parse(xhr.response);
   if(obj.message) {
@@ -7,6 +8,7 @@ const parseJSON = (xhr, content) => {
   }
 };
 
+// Handles JSON responses from the server and updates HTML accordingly
 const handleResponse = (xhr) => {
   const response = document.querySelector('#response');
   const username = document.querySelector('#username');
@@ -37,12 +39,14 @@ const handleResponse = (xhr) => {
 
   username.innerHTML = `User: ${localStorage.getItem('username')}`;
 
-  console.log(xhr);
+  // If there's a message, parse and display it
   if(xhr.response) {
     parseJSON(xhr, response);
   }
 };
 
+// Displays tasks in bubbles separated by dates
+// xhr.response must be a list of tasks for a specific user
 const displayTasks = (xhr) => {
   const username = localStorage.getItem('username');
   const responseJSON = JSON.parse(xhr.response);
@@ -51,6 +55,8 @@ const displayTasks = (xhr) => {
 
   content.innerHTML = "";
 
+  // Separates bubbles by date
+  // Multiple tasks can appear on the same date
   for(const date in responseJSON[username]) {
     content.innerHTML += `<div id="_${date}"></div>`;
     task = document.querySelector(`#_${date.toString()}`);
@@ -64,6 +70,7 @@ const displayTasks = (xhr) => {
   }
 };
 
+// Gets a full list of tasks from the server and displays them
 const requestUpdate = (e, form) => {
   const xhr = new XMLHttpRequest();
   xhr.open('GET', '/getTasks');
@@ -78,6 +85,7 @@ const requestUpdate = (e, form) => {
   return false;
 };
 
+// Gets a filtered list of tasks from the server and displays them
 const filterByTask = (e, filterForm) => {
   const url = filterForm.querySelector('#typeFilter').value;
   const username = localStorage.getItem('username');
@@ -95,6 +103,7 @@ const filterByTask = (e, filterForm) => {
   return false;
 }
 
+// Sends task data to the server to be stored by username
 const sendPost = (e, taskForm) => {
   e.preventDefault();
 
@@ -120,6 +129,7 @@ const sendPost = (e, taskForm) => {
   return false;
 };
 
+// Sends a username to the server and runs init() onload
 const sendUserName = (username) => {
   const xhr = new XMLHttpRequest();
 
@@ -147,7 +157,7 @@ const init = () => {
 };
 
 // https://www.w3schools.com/js/js_popup.asp
-// users need a username in order to see only their tasks 
+// Users need a username in order to see only their tasks 
 const userNamePopUp = () => {
   
   if(localStorage.getItem('username') == null) {
@@ -158,7 +168,6 @@ const userNamePopUp = () => {
     } while (p == null || p == "");
 
     localStorage.setItem('username', p);
-    sendUserName(p);
   } 
   
   sendUserName(localStorage.getItem('username'));
