@@ -192,8 +192,6 @@ var userNamePopUp = function userNamePopUp() {
 
     localStorage.setItem('username', p);
     checkUserName(p);
-  } else {
-    checkUserName(localStorage.getItem('username'));
   }
 };
 
