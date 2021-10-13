@@ -1,10 +1,19 @@
+body {
+    margin: 0;
+    background-color: lightskyblue;
+}
+
 #top {
+    padding-left: 1em;
+    padding-bottom: 1em;
     display: grid;
     grid-template-areas: 
-        "h1 response"
-        "form response";
-    grid-template-columns: 1fr 4fr;
-    grid-template-rows: auto auto;
+        "h1 response username"
+        "form response username";
+    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-rows: auto auto auto;
+    background-color: lightgrey;
+    box-shadow: 0 5px 10px grey;
 }
 
 #taskForm {
@@ -12,6 +21,7 @@
     display: grid;
     grid-template-columns: auto auto;
     grid-template-rows: auto auto auto;
+    grid-gap: 8px;
     width: 20%;
 }
 
@@ -19,17 +29,26 @@
     grid-area: h1;
 }
 
+#username {
+    grid-area: username;
+    display: flex;
+    justify-content: end;
+    margin: 1em;
+}
+
 #response {
     grid-area: response;
     display: flex;
     flex-direction: column;
-    align-self: flex-end;
+    align-self: center;
+    justify-self: center;
 }
 
 #content {
     display: grid;
     grid-gap: 4px;
     grid-template-columns: repeat(4, 1fr);
+    padding: .5em;
 }
 
 #content div {
@@ -37,6 +56,7 @@
     padding: 0 0 1em 1em;
     border-radius: 25px;
     border: 1px solid grey;
+    background-color: white;
 }
 
 h3 {
@@ -45,20 +65,25 @@ h3 {
 
 .School {
     background-color: hotpink;
+    width: fit-content;
 }
 
 .Appointment {
     background-color: cyan;
+    width: fit-content;
 }
 
 .Work {
     background-color: yellow;
+    width: fit-content;
 }
 
 .Event {
     background-color: lightgreen;
+    width: fit-content;
 }
 
 .Other {
     background-color: lightgrey;
+    width: fit-content;
 }

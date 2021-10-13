@@ -5,13 +5,14 @@ var parseJSON = function parseJSON(xhr, content) {
 
   if (obj.message) {
     var p = document.createElement('p');
-    p.textContent = "Message: ".concat(obj.message);
+    p.textContent = "".concat(obj.message);
     content.appendChild(p);
   }
 };
 
 var handleResponse = function handleResponse(xhr, display) {
   var response = document.querySelector('#response');
+  var username = document.querySelector('#username');
   response.innerHTML = "";
 
   switch (xhr.status) {
@@ -24,7 +25,7 @@ var handleResponse = function handleResponse(xhr, display) {
       break;
 
     case 204:
-      response.innerHTML = '<b>Updated</b>';
+      response.innerHTML = '<b>Task Updated!</b>';
       break;
 
     case 400:
@@ -39,6 +40,8 @@ var handleResponse = function handleResponse(xhr, display) {
       response.innerHTML = '<p>Error code not implemented by client! :(</p>';
       break;
   }
+
+  username.innerHTML = "User: ".concat(localStorage.getItem('username'));
 
   if (xhr.response) {
     parseJSON(xhr, response);

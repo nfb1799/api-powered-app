@@ -2,13 +2,14 @@ const parseJSON = (xhr, content) => {
   const obj = JSON.parse(xhr.response);
   if(obj.message) {
     const p = document.createElement('p');
-    p.textContent = `Message: ${obj.message}`;
+    p.textContent = `${obj.message}`;
     content.appendChild(p);
   }
 };
 
 const handleResponse = (xhr, display) => {
   const response = document.querySelector('#response');
+  const username = document.querySelector('#username');
   
   response.innerHTML = "";
 
@@ -21,7 +22,7 @@ const handleResponse = (xhr, display) => {
       response.innerHTML = '<b>Created!</b>';
       break;
     case 204:
-      response.innerHTML = '<b>Updated</b>'
+      response.innerHTML = '<b>Task Updated!</b>'
       break;
     case 400:
       response.innerHTML = '<b>Bad Request :(</b>';
@@ -33,6 +34,8 @@ const handleResponse = (xhr, display) => {
       response.innerHTML = '<p>Error code not implemented by client! :(</p>';
       break;
   }
+
+  username.innerHTML = `User: ${localStorage.getItem('username')}`;
 
   if(xhr.response) {
     parseJSON(xhr, response);
